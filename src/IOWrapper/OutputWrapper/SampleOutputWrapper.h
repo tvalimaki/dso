@@ -1,6 +1,6 @@
 /**
 * This file is part of DSO.
-* 
+*
 * Copyright 2016 Technical University of Munich and Intel.
 * Developed by Jakob Engel <engelj at in dot tum dot de>,
 * for more information see <http://vision.in.tum.de/dso>.
@@ -49,6 +49,7 @@ public:
         inline SampleOutputWrapper()
         {
             printf("OUT: Created SampleOutputWrapper\n");
+            if(-1 == system("rm -rf result_dso.txt")) printf("Could not delete olf result file!\n");
         }
 
         virtual ~SampleOutputWrapper()
@@ -105,6 +106,11 @@ public:
                    frame->timestamp,
                    frame->id);
             std::cout << frame->camToWorld.matrix3x4() << "\n";
+
+            std::ofstream posefile;
+            posefile.open("result_dso.txt", std::ios::app);
+            posefile << frame->timestamp << " " << frame->camToWorld.translation().transpose() << " " << frame->camToWorld.unit_quaternion().coeffs().transpose() << "\n";
+            posefile.close();
         }
 
 
