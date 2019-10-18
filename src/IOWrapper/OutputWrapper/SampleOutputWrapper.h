@@ -107,10 +107,15 @@ public:
                    frame->id);
             std::cout << frame->camToWorld.matrix3x4() << "\n";
 
-            std::ofstream posefile;
-            posefile.open("result_dso.txt", std::ios::app);
-            posefile << frame->timestamp << " " << frame->camToWorld.translation().transpose() << " " << frame->camToWorld.unit_quaternion().coeffs().transpose() << "\n";
-            posefile.close();
+            Vec3 translation = frame->camToWorld.translation();
+            Vec4 quaternion = frame->camToWorld.unit_quaternion().coeffs();
+
+            FILE * posefile = fopen("result_dso.txt", "a");
+            fprintf(posefile, "%f %.10e %.10e %.10e %.10e %.10e %.10e %.10e\n",
+                frame->timestamp,
+                translation[0], translation[1], translation[2],
+                quaternion[0], quaternion[1], quaternion[2], quaternion[3]);
+            fclose(posefile);
         }
 
 
